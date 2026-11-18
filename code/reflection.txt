@@ -1,8 +1,10 @@
-Write your reflection here.
-
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (HTML element, CSS selector, class and id
-selectors, sibling selector, inner_text, attribute, headless browser, waiting for
-JavaScript, crawling, pagination, read_html, melt, fuzzy matching, normalization,
-threshold, human in the loop, merge indicator, gap analysis), and make it
-actionable.
+In this assignment, I was able to learn more about web scraping and improve my web scraping 
+skills. For example, one way that allows me to learn about web scraping is through the use 
+of a headless browser. In scrape_menus.py, although it is currently set to headless=True, it 
+can be set to headless=False to actually form an idea of what the browser is doing. This 
+allows me to see the website actually being scraped. One thing I struggled with was writing 
+the code to actually scrape. For example, I struggled with the function scrape_lakeshore. I 
+think I needed assistance in finding the class and id selectors to make sure I was using the 
+correct HTML element in my scraping. For the future, I can practice finding selectors by going 
+to a website, right clicking on an element, and using the inspect feature to copy the specific 
+selector. Then I can put that into code to test if it works and returns the right content.

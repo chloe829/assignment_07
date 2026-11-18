@@ -18,6 +18,49 @@ import streamlit as st
 
 from rivals import CAFES, MENUS_FILE, OUR_CAFE, run_scraper
 
+st.title("Salt City: Scrape the Rivals")
+st.markdown("Pick the cafés to scrape. Each run replaces the saved dataset.")
+
+cafes = st.multiselect(
+    "Cafés",
+    options=list(CAFES),
+    default=list(CAFES),
+    key="cafes",
+)
+
+if st.button("Scrape", key="scrape"):
+    if cafes:
+        with st.spinner("A browser is visiting the selected cafés..."):
+            result = run_scraper(cafes)
+        if result.returncode == 0:
+            output = result.stdout.strip()
+            last_line = output.splitlines()[-1] if output else ""
+            st.success(last_line)
+        else:
+            st.error("The scraper failed.")
+            st.code(result.stderr[-1500:])
+
+if not os.path.exists(MENUS_FILE):
+    st.info("No menus yet — scrape them on this page first.")
+    st.stop()
+
+menus = pd.read_csv(MENUS_FILE)
+theirs = menus[menus["cafe"] != OUR_CAFE]
+
+c1, c2, c3 = st.columns(3)
+c1.metric("Cafés", theirs["cafe"].nunique())
+c2.metric("Items", theirs[["cafe", "item"]].drop_duplicates().shape[0])
+c3.metric("Rows", len(theirs))
+
+st.dataframe(menus, hide_index=True)
+st.download_button(
+    "Download the dataset",
+    menus.to_csv(index=False),
+    file_name="menus.csv",
+    mime="text/csv",
+    key="download",
+)
+
 # --- The page: the algorithm, step by step ------------------------------------------
 #
 # Write the code for each step below its comment. The tests

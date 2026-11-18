@@ -54,11 +54,15 @@ rows = []
 with sync_playwright() as playwright:
     # Containers (Codespaces, the grader) have very little shared memory;
     # without this flag Chromium can crash as soon as it opens a page.
-    browser = playwright.chromium.launch(headless=True,
-                                       args=["--disable-dev-shm-usage"])
+    browser = playwright.chromium.launch(
+        headless=True, args=["--disable-dev-shm-usage"]
+    )
     page = browser.new_page()
-    for name, scraper in [("lakeshore", scrape_lakeshore), ("hilltop", scrape_hilltop),
-                          ("canal", scrape_canal)]:
+    for name, scraper in [
+        ("lakeshore", scrape_lakeshore),
+        ("hilltop", scrape_hilltop),
+        ("canal", scrape_canal),
+    ]:
         result = scraper(page)
         page.screenshot(path=os.path.join(CACHE_DIR, f"{name}.png"), full_page=True)
         show(f"Part 1: scrape_{name}  (screenshot: cache/{name}.png)", result)

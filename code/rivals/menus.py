@@ -46,8 +46,9 @@ def menus_table(rows: list[dict]) -> pd.DataFrame:
     Extra keys a scraper might add are left out. An empty list gives an empty
     table that still has the five columns.
     """
-    # TODO: your code here
-    pass
+    if not rows:
+        return pd.DataFrame(columns=["cafe", "category", "item", "size", "price"])
+    return pd.DataFrame(rows)[["cafe", "category", "item", "size", "price"]]
 
 
 def add_kinds(menus: pd.DataFrame, categories: pd.DataFrame) -> pd.DataFrame:
@@ -57,8 +58,14 @@ def add_kinds(menus: pd.DataFrame, categories: pd.DataFrame) -> pd.DataFrame:
     Every row is kept, in order (a one-sided merge). A category that is not in
     `categories` gets a missing kind. `menus` itself is not changed.
     """
-    # TODO: your code here
-    pass
+    out = menus.merge(
+        categories[["cafe", "category", "kind"]],
+        on=["cafe", "category"],
+        how="left",
+        sort=False,
+    )
+    original_columns = list(menus.columns)
+    return out[original_columns + ["kind"]].reset_index(drop=True)
 
 
 def build_dataset(rival_rows: list[dict]) -> pd.DataFrame:
@@ -68,5 +75,8 @@ def build_dataset(rival_rows: list[dict]) -> pd.DataFrame:
     `add_kinds` with data/categories.csv. The columns are settings.MENU_COLUMNS,
     in that order; plain index.
     """
-    # TODO: your code here
-    pass
+    rivals = menus_table(rival_rows)
+    combined = pd.concat([load_our_menu(), rivals], ignore_index=True)
+    categories = pd.read_csv(CATEGORIES_FILE)
+    out = add_kinds(combined, categories)
+    return out[MENU_COLUMNS].reset_index(drop=True)
